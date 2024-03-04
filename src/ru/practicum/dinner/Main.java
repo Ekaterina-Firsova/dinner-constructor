@@ -1,5 +1,6 @@
 package ru.practicum.dinner;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -24,6 +25,9 @@ public class Main {
                     break;
                 case "3":
                     return;
+                default:
+                    System.out.println("Такой команды нет");
+                    break;
             }
         }
     }
@@ -41,25 +45,41 @@ public class Main {
         System.out.println("Введите название блюда:");
         String dishName = scanner.nextLine();
 
-        // добавьте новое блюдо
+        if (dishType.isEmpty() || dishName.isEmpty()) {
+            System.out.println("Некорректный ввод");
+            return;
+        }
+        dc.addNewDish(dishType, dishName);
     }
 
     private static void generateDishCombo() {
+        if (dc.dishTypes.isEmpty()) {
+            System.out.println("Вы пока не добавили ни одного блюда.");
+            return;
+        }
+
         System.out.println("Начинаем конструировать обед...");
 
         System.out.println("Введите количество наборов, которые нужно сгенерировать:");
         int numberOfCombos = scanner.nextInt();
         scanner.nextLine();
+        ArrayList<String> listTypes = new ArrayList<>();
 
         System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
         String nextItem = scanner.nextLine();
 
-        //реализуйте ввод типов блюд
         while (!nextItem.isEmpty()) {
-
+            if (!dc.checkType(nextItem)) {
+                System.out.println("Такого типа нет. Введите еще раз");
+            } else {
+                listTypes.add(nextItem);
+            }
+            nextItem = scanner.nextLine();
         }
-
-        // сгенерируйте комбинации блюд и выведите на экран
-
+        ArrayList<ArrayList<String>> comboMenu = dc.makeCombo(listTypes, numberOfCombos);
+        for (int i = 0; i < comboMenu.size(); i++) {
+            System.out.println("Комбо " + (i + 1));
+            System.out.println(comboMenu.get(i));
+        }
     }
 }
